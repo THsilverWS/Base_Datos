@@ -4,108 +4,107 @@
 **Curso:** Bases de Datos Avanzadas y Big Data (CIIN1021P) | Ciclo 2026-2  
 **Institución:** Universidad Privada del Norte (UPN)  
 **Grupo:** Grupo 5  
+**Docente:** Jorge Ricardo Pérez Vigil  
 
 ### Integrantes del Equipo
 * CRUZADO ARROYO, JOAQUIN MATHIAS (N00467227)
 * GOMEZ LLERENA, FABRIZIO MATHÍAS (N00498473)
+* JUAREZ GARRIDO, JHON ALBERTO (N00475124)
 * MIRANDA AMAYA, ALINA JAQUELINE (N00476960)
 * PAREDES PACHERRE, CARLOS ADRIAN (N00483352)
 * RODRIGUEZ PIZAN, MATHIAS FELIPE (N00467212)
-* JUAREZ GARRIDO, JHON ALBERTO (N00475124)
 
 ---
 
 ## 📌 ¿De qué trata el proyecto?
-El proyecto implementa una solución de datos de extremo a extremo para la **DIRESA La Libertad** que automatiza la ingesta, garantiza la seguridad bajo la **Ley N.° 29733** y transforma los microdatos abiertos de **Dengue y Leishmaniasis** del MINSA en evidencia interactiva para la toma de decisiones sanitarias.
+El proyecto implementa una solución de datos de extremo a extremo para la **DIRESA La Libertad** que automatiza la ingesta de datos, garantiza la seguridad bajo la **Ley N.° 29733** (Protección de Datos Personales), integra persistencia híbrida **SQL y NoSQL (MongoDB)**, construye un **Data Warehouse dimensional (Ralph Kimball)** con procesos ETL y permite el análisis visual interactivo en **Power BI** y procesamiento masivo con **Apache PySpark**.
 
 ---
 
-## 📁 Estructura Oficial del Repositorio (8 Carpetas)
-
-Cada carpeta contiene su propio archivo explicativo `README.md`:
+## 📁 Estructura del Repositorio
 
 ```text
 Grupo5_CIIN1021P_EF_REPO/
 │
-├── 01_datos/             --> Microdatos oficiales MINSA, muestras y diagnóstico de calidad
+├── 01_datos/             --> Muestras de prueba y diagnóstico cuantificado de calidad de datos
 ├── 02_automatizacion/    --> DDL, SPs, triggers de auditoría/integridad y pruebas en SQL Server
-├── 03_seguridad/         --> Roles (Ley 29733), políticas de respaldo, restore y optimización
-├── 04_nosql/             --> Colección, JSON y operaciones CRUD en MongoDB
-├── 05_dw_etl/            --> Modelo dimensional (Kimball), DDL, SSIS y ETL en Python
-├── 06_dashboard/         --> Dashboard en Power BI Desktop, consultas OLAP en SQL y medidas DAX
-├── 07_bigdata/           --> Notebook PySpark, script y comparativa de escalabilidad
-├── 08_documentacion/     --> Informe técnico ([1.1]-[1.9]), diapositivas y matriz ética
+├── 03_seguridad/         --> Roles RBAC (Ley 29733), políticas de respaldo, restore y optimización
+├── 04_nosql/             --> Datos clínicos semiestructurados JSON y operaciones CRUD en MongoDB
+├── 05_dw_etl/            --> Modelo dimensional (Kimball), paquete SSIS de Visual Studio y ETL en Python
+├── 06_dashboard/         --> Dashboard oficial en Power BI Desktop (.pbix), consultas OLAP y medidas DAX
+├── 07_bigdata/           --> Cuaderno PySpark para Google Colab y script de benchmark de escalabilidad
 │
-├── 00_borrar_bases_de_datos.sql  --> Script para reiniciar el entorno en SQL Server
-├── Grupo5_CIIN1021P_EF.pdf      --> 📕 INFORME TÉCNICO FINAL OFICIAL (PDF listo para entrega)
-├── Grupo5_CIIN1021P_EF_PRES.pptx --> 📊 PRESENTACIÓN OFICIAL DE DIAPOSITIVAS (PPTX para la sustentación)
-├── informacion.md               --> 📘 Explicación general de todo el proyecto y preguntas frecuentes
+├── 00_borrar_bases_de_datos.sql  --> Script para reiniciar el entorno de pruebas en SQL Server
+├── README.md                     --> Documentación técnica y guía de ejecución del proyecto
 ├── requirements.txt              --> Dependencias de Python (pymongo, pandas)
-└── setup.py                      --> Script instalador de dependencias
+└── setup.py                      --> Script para instalación rápida de dependencias
 ```
-
-> 💡 **Para una explicación detallada y sencilla de todo el proyecto, consulta [informacion.md](informacion.md).**
-
 
 ---
 
-## 🚀 Guía Rápida de Ejecución
+## 🚀 Guía Rápida de Ejecución Paso a Paso
 
-### Paso 0: Dependencias de Python
+### Paso 0: Reinicio del Entorno (Opcional)
+Si deseas limpiar cualquier base de datos o login previo para iniciar pruebas desde cero, ejecuta en SQL Server Management Studio (SSMS):
+```sql
+00_borrar_bases_de_datos.sql
+```
+
+### Paso 1: Instalación de Dependencias
+Instala las librerías necesarias con un solo comando en la terminal:
 ```bash
 python setup.py
 ```
 
-### Paso 1: Diagnóstico de Calidad de Datos
+### Paso 2: Diagnóstico de Calidad de Datos
+Analiza los registros epidemiológicos, detecta campos nulos y cuenta duplicados:
 ```bash
 python 01_datos/diagnostico_calidad.py
 ```
+*Los resultados se guardan automáticamente en `01_datos/diagnostico_calidad_resultado.txt`.*
 
-### Paso 2: Base de Datos y Automatización (SQL Server)
-En **SQL Server Management Studio (SSMS)**, conéctate a tu servidor local y ejecuta en orden:
-1. `02_automatizacion/01_ddl_tablas_y_log.sql` (Crea la base de datos y tablas).
-2. `02_automatizacion/02_stored_procedures.sql` (Crea funciones, triggers y procedimientos).
-3. `02_automatizacion/03_pruebas_automatizacion.sql` (Ejecuta las pruebas transaccionales).
-4. `02_automatizacion/04_carga_datos_csv.sql` *(Opcional)* (Carga los datos completos por Bulk Insert).
+### Paso 3: Automatización y Control Transaccional (SQL Server)
+En **SSMS**, conectado a tu instancia local (`.` o `localhost`), ejecuta en orden:
+1. `02_automatizacion/01_ddl_tablas_y_log.sql`: Crea la base de datos `DataSalud`, tablas de staging, tabla oficial y tabla inmutable `Log_Auditoria`.
+2. `02_automatizacion/02_stored_procedures.sql`: Compila la función de etapas de vida (`fn_ClasificarCursoVida`), triggers de auditoría e integridad y los procedimientos almacenados transaccionales (`sp_IngestarDesdeStaging`, `sp_ValidarYRegistrarCaso`).
+3. `02_automatizacion/03_pruebas_automatizacion.sql`: Ejecuta las 7 pruebas automáticas (bloqueo de semanas inválidas, reversión con savepoint y registro de auditoría).
+4. `02_automatizacion/04_carga_datos_csv.sql`: Carga masiva con `BULK INSERT` a staging.
 
-### Paso 3: Seguridad, Respaldos e Índices
+### Paso 4: Seguridad, Respaldo y Rendimiento
 En SSMS, ejecuta en orden:
-1. `03_seguridad/01_roles_y_permisos.sql` (Crea roles, logins y valida permisos).
-2. `03_seguridad/02_politica_respaldo.sql` (Genera respaldos Full y Diferencial).
-3. `03_seguridad/03_restauracion_prueba.sql` (Prueba la restauración en base de prueba).
-4. `03_seguridad/04_optimizacion_indices.sql` (Crea el índice y mide la aceleración).
+1. `03_seguridad/01_roles_y_permisos.sql`: Crea los 3 roles (`rol_administrador`, `rol_analista`, `rol_auditor`), logins con contraseñas seguras y valida permisos con `EXECUTE AS`.
+2. `03_seguridad/02_politica_respaldo.sql`: Genera los respaldos Full y Diferencial en disco.
+3. `03_seguridad/03_restauracion_prueba.sql`: Restaura la copia de seguridad en `DataSalud_RestoreTest` en modo `NORECOVERY` y `RECOVERY`.
+4. `03_seguridad/04_optimizacion_indices.sql`: Crea el índice no agrupado `IX_Notificacion_Enfermedad_Ano_Semana` y mide la aceleración de consultas (Index Seek).
 
-### Paso 4: NoSQL con MongoDB
-Con el servicio de MongoDB iniciado:
+### Paso 5: Persistencia NoSQL (MongoDB)
+Con el servicio de MongoDB iniciado localmente, ejecuta el script interactivo CRUD:
 ```bash
 python 04_nosql/operaciones_crud_mongodb.py
 ```
-*(O ejecuta `04_nosql/operaciones_crud_mongodb.js` desde mongosh)*.
+*Ejecuta las operaciones de inserción masiva (Create), lectura de pacientes graves (Read), actualización de plaquetas (Update) y eliminación controlada (Delete).*
 
-### Paso 5: Data Warehouse y Proceso ETL
-* **Opción rápida por terminal:**
+### Paso 6: Data Warehouse y Pipeline ETL
+Para construir el modelo dimensional en estrella y poblar las 5 dimensiones y la tabla de hechos, dispones de dos alternativas equivalentes:
+* **Opción A (Rápida por Terminal):**
   ```bash
   python 05_dw_etl/etl_python_simple.py
   ```
-* **Opción visual en Visual Studio:**
-  Abre `05_dw_etl/ETL/ETL.slnx`, abre `Package.dtsx` y presiona **Iniciar (F5)**.
+* **Opción B (Visual Studio SSIS):**
+  Abre la solución `05_dw_etl/ETL/ETL.slnx`, haz doble clic en `Package.dtsx` y presiona **Iniciar (Start)**.
 
-### Paso 6: Dashboard y Operaciones OLAP (Power BI)
-* Abre tu ventana de **Power BI Desktop** (el modelo ya está conectado y cargado con todas sus tablas, relaciones y medidas DAX).
-* Sigue los pasos de `06_dashboard/guia_powerbi_desktop.md` para colocar los visuales y guarda el archivo como `06_dashboard/DataSalud_Dashboard.pbix`.
-* Para ejecutar las consultas OLAP en SQL Server, abre `06_dashboard/consultas_olap_sql.sql` en SSMS.
+### Paso 7: Dashboard y Análisis OLAP (Power BI)
+* **Visualización en Power BI Desktop:**
+  Abre el archivo `06_dashboard/DataSalud_Dashboard.pbix` en Power BI Desktop. El archivo está configurado en **Modo Importación**, por lo que contiene el modelo semántico cargado, las relaciones activas y las medidas DAX oficiales (`Total Casos`, `Tasa Severidad Porcentual`, `Presión Asistencial por Centro`).
+* **Consultas Multidimensionales OLAP en SQL Server:**
+  Ejecuta `06_dashboard/consultas_olap_sql.sql` en SSMS para ver las operaciones de agregación con `ROLLUP` y `CUBE`.
 
-### Paso 7: Procesamiento Big Data con PySpark
-* Ejecuta el script de análisis y benchmark:
+### Paso 8: Procesamiento Big Data (Apache PySpark)
+* **Ejecución Rápida en Terminal:**
   ```bash
   python 07_bigdata/analisis_bigdata_script.py
   ```
-* O abre el notebook interactivo `07_bigdata/analisis_bigdata_pyspark.ipynb` en VS Code o Jupyter.
-
-### Paso 8: Documentación y Sustentación
-Revisa la carpeta `08_documentacion/`:
-* `informe_tecnico_completo.md`: Informe final estructurado de la sección [1.1] a [1.9].
-* `guia_diapositivas_sustentacion.md`: Guía de las 12 diapositivas para la exposición de 15 minutos.
-* `matriz_trazabilidad.md`: Matriz que conecta logros, temas, entregables y rúbrica.
-* `reflexion_etica_y_curricular.md`: Dilemas éticos y articulación curricular.
-* `declaracion_uso_ia.md`: Formato institucional de declaración de uso de IA.
+* **Ejecución en Google Colab:**
+  1. Entra a [colab.research.google.com](https://colab.research.google.com).
+  2. Sube el cuaderno `07_bigdata/analisis_bigdata_pyspark.ipynb`.
+  3. Menú **Entorno de ejecución ➔ Ejecutar todo**. El cuaderno instala PySpark automáticamente y ejecuta los 3 objetos de Spark (DataFrames, SparkSQL y RDDs map/reduce).
