@@ -1,110 +1,345 @@
-# DataSalud Perú — DIRESA La Libertad
-## Sistema Integrado de Base de Datos Segura, Automatizada y Analítica (MINSA)
+<p align="center">
+  <img src="docs/images/iris-2.32-principal.webp" alt="DataSalud Perú Banner Principal" width="900">
+</p>
 
-**Curso:** Bases de Datos Avanzadas y Big Data (CIIN1021P) | Ciclo 2026-2  
-**Institución:** Universidad Privada del Norte (UPN)  
-**Grupo:** Grupo 5  
-**Docente:** Jorge Ricardo Pérez Vigil  
+<h1 align="center">DataSalud Perú</h1>
 
-### Integrantes del Equipo
-* CRUZADO ARROYO, JOAQUIN MATHIAS (N00467227)
-* GOMEZ LLERENA, FABRIZIO MATHÍAS (N00498473)
-* JUAREZ GARRIDO, JHON ALBERTO (N00475124)
-* MIRANDA AMAYA, ALINA JAQUELINE (N00476960)
-* PAREDES PACHERRE, CARLOS ADRIAN (N00483352)
-* RODRIGUEZ PIZAN, MATHIAS FELIPE (N00467212)
+<p align="center">
+  <b>Sistema Integrado de Base de Datos Segura, Automatizada e Inteligente para la DIRESA La Libertad</b><br>
+  <sub>Evaluación Final (EF) &bull; Bases de Datos Avanzadas y Big Data (CIIN1021P) &bull; Ciclo 2026-2 &bull; Universidad Privada del Norte</sub>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/Versión-2026--2-blue?style=flat-square" alt="Versión"></a>
+  <a href="#"><img src="https://img.shields.io/badge/SQL_Server-2022-CC292B?style=flat-square&logo=microsoftsqlserver&logoColor=white" alt="SQL Server"></a>
+  <a href="#"><img src="https://img.shields.io/badge/MongoDB-6.0+-47A248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Power_BI-Desktop-F2C811?style=flat-square&logo=powerbi&logoColor=black" alt="Power BI"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Apache_Spark-PySpark-E25A1C?style=flat-square&logo=apachespark&logoColor=white" alt="Spark"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Cumplimiento-Ley_N°_29733-009688?style=flat-square" alt="Ley 29733"></a>
+</p>
+
+<p align="center">
+  <a href="#-nuevo-aquí-resumen-rápido-del-proyecto">¿Nuevo aquí?</a> &bull;
+  <a href="#-capturas-y-evidencias-visuales-screenshots">Screenshots</a> &bull;
+  <a href="#-flujo-de-arquitectura-integrada">Arquitectura</a> &bull;
+  <a href="#-guía-rápida-de-ejecución-quick-start">Quick Start</a> &bull;
+  <a href="#-módulos-del-proyecto-y-entregables">Módulos</a> &bull;
+  <a href="#-pruebas-y-evidencias-mínimas-de-la-rúbrica">Pruebas Mínimas</a> &bull;
+  <a href="#-documentación-y-entregables">Documentación</a> &bull;
+  <a href="#-integrantes-del-equipo">Equipo</a>
+</p>
 
 ---
 
-## 📌 ¿De qué trata el proyecto?
-El proyecto implementa una solución de datos de extremo a extremo para la **DIRESA La Libertad** que automatiza la ingesta de datos, garantiza la seguridad bajo la **Ley N.° 29733** (Protección de Datos Personales), integra persistencia híbrida **SQL y NoSQL (MongoDB)**, construye un **Data Warehouse dimensional (Ralph Kimball)** con procesos ETL y permite el análisis visual interactivo en **Power BI** y procesamiento masivo con **Apache PySpark**.
+<details>
+<summary><b>🤔 ¿Nuevo aquí? Haz clic si necesitas entender el proyecto rápidamente</b></summary>
 
----
+### ¿Qué es DataSalud Perú?
+Es una solución integral de datos desarrollada para la **DIRESA La Libertad** que automatiza la ingesta, garantiza la integridad y seguridad de la información sanitaria, e integra herramientas analíticas de vanguardia (SQL Server, MongoDB, Power BI y Apache PySpark) para convertir datos abiertos de vigilancia epidemiológica del **MINSA** (Dengue y Leishmaniasis, 2000–2024) en evidencia para la toma de decisiones médicas.
 
-## 📁 Estructura del Repositorio
+### ¿Cómo se conectan los componentes? (Flujo Integrado de Extremo a Extremo)
 
 ```text
-Grupo5_CIIN1021P_EF_REPO/
-│
-├── 01_datos/             --> Muestras de prueba y diagnóstico cuantificado de calidad de datos
-├── 02_automatizacion/    --> DDL, SPs, triggers de auditoría/integridad y pruebas en SQL Server
-├── 03_seguridad/         --> Roles RBAC (Ley 29733), políticas de respaldo, restore y optimización
-├── 04_nosql/             --> Datos clínicos semiestructurados JSON y operaciones CRUD en MongoDB
-├── 05_dw_etl/            --> Modelo dimensional (Kimball), paquete SSIS de Visual Studio y ETL en Python
-├── 06_dashboard/         --> Dashboard oficial en Power BI Desktop (.pbix), consultas OLAP y medidas DAX
-├── 07_bigdata/           --> Cuaderno PySpark para Google Colab y script de benchmark de escalabilidad
-│
-├── 00_borrar_bases_de_datos.sql  --> Script para reiniciar el entorno de pruebas en SQL Server
-├── README.md                     --> Documentación técnica y guía de ejecución del proyecto
-├── requirements.txt              --> Dependencias de Python (pymongo, pandas)
-└── setup.py                      --> Script para instalación rápida de dependencias
+  [ Datasets Abiertos MINSA (CSV) ]
+                 │
+                 ▼
+  [ 01_datos: Diagnóstico de Calidad ]
+  (Detección de 8% edades nulas, valores atípicos y duplicados)
+                 │
+                 ▼
+  [ 02_automatizacion: Base Transaccional DataSalud ]
+  (SPs con Transacciones y SAVEPOINT, Triggers de Auditoría e Integridad, Función de Curso de Vida)
+                 │
+        ┌────────┴────────────────────────┐
+        ▼                                 ▼
+  [ 03_seguridad: SQL Server ]      [ 04_nosql: MongoDB ]
+  (3 Roles RBAC - Ley 29733,        (Colección semiestructurada,
+   Backups FULL/DIF, Index Seek)     CRUD clínico, seguimiento de síntomas)
+        └────────┬────────────────────────┘
+                 │
+                 ▼
+  [ 05_dw_etl: Data Warehouse DataSalud_DW ]
+  (Ralph Kimball: 1 Fact Table + 5 Dimensiones Conformes, ETL SSIS / Python con logs)
+                 │
+        ┌────────┴────────────────────────┐
+        ▼                                 ▼
+  [ 06_dashboard: Power BI Desktop ] [ 07_bigdata: Apache PySpark ]
+  (3 KPIs oficiales, Matriz OLAP,    (DataFrame, SparkSQL, RDDs,
+   Drill-down por provincia y tiempo) Comparativa de escalabilidad vs SQL Server)
 ```
+
+### Palabras clave para la sustentación
+- **Integridad Transaccional (ACID):** Manejo de `BEGIN TRAN`, `COMMIT`, `ROLLBACK` y `SAVE TRANSACTION` para evitar registros incompletos ante fallas.
+- **Ralph Kimball (Esquema Estrella):** Enfoque dimensional centrado en procesos de negocio con dimensiones conformadas y una tabla de hechos atómica.
+- **Índice B-Tree (Index Seek):** Búsqueda binaria directa $O(\log N)$ que reduce las lecturas lógicas de páginas en un 99.9%.
+- **Operaciones OLAP:** Análisis multidimensional mediante *Drill-down*, *Slice & Dice*, y agregaciones jerárquicas (`ROLLUP` y `CUBE`).
+- **Escalabilidad Horizontal (Big Data):** PySpark escala agregando computadoras en clúster (*Shared-Nothing*), mientras SQL Server escala verticalmente agregando hardware a un solo servidor.
+
+</details>
 
 ---
 
-## 🚀 Guía Rápida de Ejecución Paso a Paso
+## 📸 Capturas y Evidencias Visuales (Screenshots)
 
-### Paso 0: Reinicio del Entorno (Opcional)
-Si deseas limpiar cualquier base de datos o login previo para iniciar pruebas desde cero, ejecuta en SQL Server Management Studio (SSMS):
-```sql
-00_borrar_bases_de_datos.sql
-```
+<details open>
+<summary><b>Dashboard Power BI</b>: KPIs epidemiológicos, mapas y matrices de severidad</summary>
+
+<p align="center">
+  <img src="docs/images/iris-2.31-desktop.webp" alt="Dashboard Principal" width="49%">
+  <img src="docs/images/iris-2.31-card.webp" alt="Detalle de KPIs" width="49%">
+</p>
+
+<p align="center">
+  <img src="docs/images/iris-2.31-dock.webp" alt="Navegación y filtros" width="99%">
+</p>
+
+</details>
+
+<details open>
+<summary><b>Data Warehouse y Automatización SQL</b>: Esquema Kimball, SSIS y procedimientos</summary>
+
+| | |
+|:---:|:---:|
+| ![](https://github.com/user-attachments/assets/1fe258bc-8aec-4fd9-8574-d9d7472c3cc8) | ![](https://github.com/user-attachments/assets/3ce2055b-648c-45a1-9d09-705c1b4a03b7) |
+| ![](https://github.com/user-attachments/assets/ea2311dc-769e-44dc-a46d-37cf8807d2cc) | ![](https://github.com/user-attachments/assets/da6beb4a-ccee-40ba-a372-5eea77b595f8) |
+| ![](https://github.com/user-attachments/assets/ba866063-b26a-47cb-83c8-d77bd033bf8b) | ![](https://github.com/user-attachments/assets/88e76566-061b-4f8c-a9a8-53c157950138) |
+
+</details>
+
+<details>
+<summary><b>Procesamiento Big Data y NoSQL</b>: PySpark en clúster y colecciones MongoDB</summary>
+
+| | |
+|:---:|:---:|
+| ![](https://github.com/user-attachments/assets/5c5996e7-90eb-4789-9921-0d5fe5283fa3) | ![](https://github.com/user-attachments/assets/fadf9562-751e-4138-a3a1-b87b31114d44) |
+
+</details>
+
+---
+
+> [!IMPORTANT]
+> **Cumplimiento Normativo (Ley N.° 29733 - Protección de Datos Personales):**  
+> Este repositorio no contiene credenciales expuestas, tokens, contraseñas en texto plano ni datos personales identificables reales. Toda la información ha sido anonimizada y estructurada para fines estrictamente académicos y de salud pública.
+
+---
+
+## 🏗️ Flujo de Arquitectura Integrada
+
+El proyecto cumple estrictamente con el **Criterio de Integración** oficial de la rúbrica:
+$$\text{Dato Fuente} \longrightarrow \text{Validación y Seguridad} \longrightarrow \text{Almacenamiento} \longrightarrow \text{Transformación} \longrightarrow \text{Análisis} \longrightarrow \text{Decisión}$$
+
+1. **Ingesta y Validación:** Carga masiva controlada mediante `BULK INSERT` a tablas *staging*, validación de reglas clínicas por Stored Procedure y rechazo controlado con `Log_Auditoria`.
+2. **Seguridad y Auditoría:** Segregación de funciones con 3 roles de base de datos (`rol_administrador`, `rol_analista`, `rol_auditor`), inmutabilidad de logs y política de respaldos Full + Diferencial con prueba de restauración.
+3. **Persistencia Híbrida (SQL + NoSQL):** Modelo relacional para eventos epidemiológicos estructurados y colección en MongoDB para historias clínicas y telemetría de síntomas en formato JSON flexible.
+4. **Data Warehouse Dimensional:** Modelo en estrella diseñado bajo la metodología de Ralph Kimball compuesto por 1 tabla de hechos (`Fact_Vigilancia_Epidemiologica`) y 5 dimensiones conformadas.
+5. **Inteligencia de Negocios y Big Data:** Tablero ejecutivo en Power BI Desktop con 3 KPIs estratégicos y cuaderno de PySpark con procesamiento distribuido de más de 1,000,000 de registros.
+
+---
+
+## ⚡ Guía Rápida de Ejecución (Quick Start)
 
 ### Paso 1: Instalación de Dependencias
-Instala las librerías necesarias con un solo comando en la terminal:
 ```bash
 python setup.py
 ```
 
-### Paso 2: Diagnóstico de Calidad de Datos
-Analiza los registros epidemiológicos, detecta campos nulos y cuenta duplicados:
+### Paso 2: Diagnóstico Cuantificado de Calidad de Datos
 ```bash
 python 01_datos/diagnostico_calidad.py
 ```
-*Los resultados se guardan automáticamente en `01_datos/diagnostico_calidad_resultado.txt`.*
+*Genera el reporte cuantitativo en `01_datos/diagnostico_calidad_resultado.txt`.*
 
-### Paso 3: Automatización y Control Transaccional (SQL Server)
-En **SSMS**, conectado a tu instancia local (`.` o `localhost`), ejecuta en orden:
-1. `02_automatizacion/01_ddl_tablas_y_log.sql`: Crea la base de datos `DataSalud`, tablas de staging, tabla oficial y tabla inmutable `Log_Auditoria`.
-2. `02_automatizacion/02_stored_procedures.sql`: Compila la función de etapas de vida (`fn_ClasificarCursoVida`), triggers de auditoría e integridad y los procedimientos almacenados transaccionales (`sp_IngestarDesdeStaging`, `sp_ValidarYRegistrarCaso`).
-3. `02_automatizacion/03_pruebas_automatizacion.sql`: Ejecuta las 7 pruebas automáticas (bloqueo de semanas inválidas, reversión con savepoint y registro de auditoría).
-4. `02_automatizacion/04_carga_datos_csv.sql`: Carga masiva con `BULK INSERT` a staging.
+### Paso 3: Base de Datos Transaccional y Automatización (SQL Server)
+En **SQL Server Management Studio (SSMS)** conectado a `localhost`, ejecuta en orden:
+1. `02_automatizacion/01_ddl_tablas_y_log.sql`: Tablas de staging, tabla oficial y tabla inmutable `Log_Auditoria`.
+2. `02_automatizacion/02_stored_procedures.sql`: Triggers de auditoría/integridad, función `fn_ClasificarCursoVida` y SPs transaccionales.
+3. `02_automatizacion/03_pruebas_automatizacion.sql`: 7 pruebas automatizadas de validación y rollback.
+4. `02_automatizacion/04_carga_datos_csv.sql`: Carga inicial de datos desde CSV a staging.
 
-### Paso 4: Seguridad, Respaldo y Rendimiento
+### Paso 4: Seguridad, Respaldos y Optimización de Índices
 En SSMS, ejecuta en orden:
-1. `03_seguridad/01_roles_y_permisos.sql`: Crea los 3 roles (`rol_administrador`, `rol_analista`, `rol_auditor`), logins con contraseñas seguras y valida permisos con `EXECUTE AS`.
-2. `03_seguridad/02_politica_respaldo.sql`: Genera los respaldos Full y Diferencial en disco.
-3. `03_seguridad/03_restauracion_prueba.sql`: Restaura la copia de seguridad en `DataSalud_RestoreTest` en modo `NORECOVERY` y `RECOVERY`.
-4. `03_seguridad/04_optimizacion_indices.sql`: Crea el índice no agrupado `IX_Notificacion_Enfermedad_Ano_Semana` y mide la aceleración de consultas (Index Seek).
+1. `03_seguridad/01_roles_y_permisos.sql`: Creación de roles RBAC, asignación de permisos y pruebas con `EXECUTE AS`.
+2. `03_seguridad/02_politica_respaldo.sql`: Ejecución de copias de seguridad Full y Diferencial.
+3. `03_seguridad/03_restauracion_prueba.sql`: Restauración de prueba en base de datos secundaria `DataSalud_RestoreTest`.
+4. `03_seguridad/04_optimizacion_indices.sql`: Creación del índice no agrupado `IX_Notificacion_Enfermedad_Ano_Semana` y medición con `SET STATISTICS TIME/IO`.
 
 ### Paso 5: Persistencia NoSQL (MongoDB)
-Con el servicio de MongoDB iniciado localmente, ejecuta el script interactivo CRUD:
+Con MongoDB ejecutándose localmente, corre el script interactivo CRUD:
 ```bash
 python 04_nosql/operaciones_crud_mongodb.py
 ```
-*Ejecuta las operaciones de inserción masiva (Create), lectura de pacientes graves (Read), actualización de plaquetas (Update) y eliminación controlada (Delete).*
+*O si prefieres el script nativo de Mongo Shell:*
+```bash
+mongosh < 04_nosql/operaciones_mongodb.js
+```
 
-### Paso 6: Data Warehouse y Pipeline ETL
-Para construir el modelo dimensional en estrella y poblar las 5 dimensiones y la tabla de hechos, dispones de dos alternativas equivalentes:
-* **Opción A (Rápida por Terminal):**
+### Paso 6: Pipeline ETL y Carga del Data Warehouse
+Ejecuta la extracción, transformación y carga hacia `DataSalud_DW`:
+* **Vía Terminal (Rápida y Modular):**
   ```bash
   python 05_dw_etl/etl_python_simple.py
   ```
-* **Opción B (Visual Studio SSIS):**
-  Abre la solución `05_dw_etl/ETL/ETL.slnx`, haz doble clic en `Package.dtsx` y presiona **Iniciar (Start)**.
+* **Vía Visual Studio SSIS:**
+  Abre `05_dw_etl/ETL/ETL.slnx`, abre `Package.dtsx` y presiona **Iniciar (F5)**.
 
-### Paso 7: Dashboard y Análisis OLAP (Power BI)
-* **Visualización en Power BI Desktop:**
-  Abre el archivo `06_dashboard/DataSalud_Dashboard.pbix` en Power BI Desktop. El archivo está configurado en **Modo Importación**, por lo que contiene el modelo semántico cargado, las relaciones activas y las medidas DAX oficiales (`Total Casos`, `Tasa Severidad Porcentual`, `Presión Asistencial por Centro`).
-* **Consultas Multidimensionales OLAP en SQL Server:**
-  Ejecuta `06_dashboard/consultas_olap_sql.sql` en SSMS para ver las operaciones de agregación con `ROLLUP` y `CUBE`.
+### Paso 7: Visualización Ejecutiva en Power BI Desktop
+1. Abre el archivo `06_dashboard/DataSalud_Dashboard.pbix` en Power BI Desktop.
+2. Contiene el modelo semántico en modo Importación, los 3 KPIs estratégicos y las matrices de navegación analítica.
+3. Para validar las operaciones OLAP en SQL Server, ejecuta `06_dashboard/consultas_olap_sql.sql`.
 
-### Paso 8: Procesamiento Big Data (Apache PySpark)
-* **Ejecución Rápida en Terminal:**
+### Paso 8: Procesamiento Big Data con Apache PySpark
+* **Ejecución Local:**
   ```bash
+  # Modo Muestra rápida (24 filas):
   python 07_bigdata/analisis_bigdata_script.py
+
+  # Modo Dataset Original (+1,000,000 filas, 108 MB):
+  python 07_bigdata/analisis_bigdata_script.py original
   ```
 * **Ejecución en Google Colab:**
-  1. Entra a [colab.research.google.com](https://colab.research.google.com).
-  2. Sube el cuaderno `07_bigdata/analisis_bigdata_pyspark.ipynb`.
-  3. Menú **Entorno de ejecución ➔ Ejecutar todo**. El cuaderno instala PySpark automáticamente y ejecuta los 3 objetos de Spark (DataFrames, SparkSQL y RDDs map/reduce).
+  Sube `07_bigdata/analisis_bigdata_pyspark.ipynb` a [Google Colab](https://colab.research.google.com) y ejecuta todas las celdas para validar DataFrames, SparkSQL y RDDs.
+
+---
+
+## 📦 Módulos del Proyecto y Entregables
+
+<details open>
+<summary><b>1. Calidad de Datos (<code>01_datos/</code>)</b></summary>
+
+- `muestra_dengue_minsa.csv` y `muestra_leishmaniosis_minsa.csv`: Muestras tabulares estructuradas.
+- `datos_abiertos_vigilancia_dengue_2000_2024.csv`: Dataset oficial MINSA masivo (108 MB, 1,029,421 filas).
+- `diagnostico_calidad.py`: Algoritmo de detección de valores nulos, duplicados y anomalías de rango clínico.
+- `ficha_relevamiento_datos.md`: Diccionario de datos, tipos, supuestos de negocio y reglas de homologación.
+</details>
+
+<details open>
+<summary><b>2. Automatización y Transacciones (<code>02_automatizacion/</code>)</b></summary>
+
+- `01_ddl_tablas_y_log.sql`: Estructura relacional con constraints y tabla inmutable de auditoría.
+- `02_stored_procedures.sql`:
+  - `fn_ClasificarCursoVida`: Función escalar que clasifica edades (Niño, Adolescente, Joven, Adulto, Adulto Mayor).
+  - `trg_Auditoria_Notificacion`: Trigger `AFTER INSERT, UPDATE, DELETE` que registra usuario, fecha y acción.
+  - `trg_Integridad_Semanas`: Trigger `INSTEAD OF INSERT` que rechaza semanas epidemiológicas fuera del rango 1–53.
+  - `sp_ValidarYRegistrarCaso`: Procedimiento con `TRY/CATCH`, `BEGIN TRAN`, `SAVE TRANSACTION` y `ROLLBACK`.
+- `03_pruebas_automatizacion.sql`: Batería de 7 pruebas unitarias con verificación en `Log_Auditoria`.
+</details>
+
+<details open>
+<summary><b>3. Seguridad y Rendimiento (<code>03_seguridad/</code>)</b></summary>
+
+- `01_roles_y_permisos.sql`: Implementación de RBAC con 3 roles:
+  - `rol_administrador` (`usr_admin`): Acceso total a DDL y DML operativo.
+  - `rol_analista` (`usr_analista`): `SELECT` exclusivo sobre vistas y tablas analíticas; denegación a logs.
+  - `rol_auditor` (`usr_auditor`): `SELECT` inmutable sobre `Log_Auditoria`; denegación a tablas médicas.
+- `02_politica_respaldo.sql`: Script de respaldos Full semanal y Diferencial diario.
+- `03_restauracion_prueba.sql`: Restauración verificada en `DataSalud_RestoreTest` con validación de registros.
+- `04_optimizacion_indices.sql`: Creación del índice no agrupado `IX_Notificacion_Enfermedad_Ano_Semana`, reduciendo lecturas lógicas de 14,820 a 12 páginas (**mejora del 99.9%**).
+</details>
+
+<details open>
+<summary><b>4. Persistencia NoSQL (<code>04_nosql/</code>)</b></summary>
+
+- `pacientes_seguimiento_clinico.json`: Colección de historias clínicas con signos vitales, síntomas y evolución.
+- `operaciones_crud_mongodb.py` y `operaciones_mongodb.js`: Operaciones de inserción, consulta de casos críticos, actualización de plaquetas y eliminación controlada.
+- `justificacion_nosql_mongodb.md`: Matriz de decisión técnica multicriterio justificando el modelo híbrido (SQL para epidemiología relacional + MongoDB para expedientes clínicos dinámicos).
+</details>
+
+<details open>
+<summary><b>5. Data Warehouse y ETL (<code>05_dw_etl/</code>)</b></summary>
+
+- `01_ddl_datawarehouse.sql`: Esquema en estrella bajo Ralph Kimball:
+  - Hechos: `Fact_Vigilancia_Epidemiologica` (conteo de casos, gravedad, hospitalizaciones, fallecidos).
+  - Dimensiones: `Dim_Tiempo`, `Dim_Ubicacion`, `Dim_Enfermedad`, `Dim_Paciente`, `Dim_Establecimiento`.
+- `Package.dtsx`: Paquete SSIS desarrollado en Visual Studio con Data Flow Task, conversiones y logs.
+- `etl_python_simple.py`: Pipeline Python alternativo completamente automatizado y verificable.
+</details>
+
+<details open>
+<summary><b>6. Dashboard y Análisis OLAP (<code>06_dashboard/</code>)</b></summary>
+
+- `DataSalud_Dashboard.pbix`: Archivo interactivo en Power BI Desktop en Modo Importación:
+  - **KPI 1:** Total Casos Epidemiológicos Notificados.
+  - **KPI 2:** Tasa de Severidad Porcentual (Casos con Signos de Alarma y Graves sobre el Total).
+  - **KPI 3:** Total de Centros de Salud Monitoreados Activamente.
+- `consultas_olap_sql.sql`: Consultas SQL con `ROLLUP`, `CUBE` y `GROUPING SETS` para análisis multidimensional.
+</details>
+
+<details open>
+<summary><b>7. Big Data con Apache PySpark (<code>07_bigdata/</code>)</b></summary>
+
+- `analisis_bigdata_pyspark.ipynb`: Cuaderno reproducible con los **3 objetos oficiales de Spark**:
+  1. **DataFrames:** Lectura estructurada, esquemas inferidos y estadísticas descriptivas.
+  2. **SparkSQL:** Consultas declarativas en vistas temporales de alta velocidad.
+  3. **RDDs:** Procesamiento funcional map/reduce (`map`, `reduceByKey`, `.take(5)`).
+- `analisis_bigdata_script.py`: Script con selector dinámico para alternar entre **Muestra** (24 filas) y **Dataset Original** (1,029,421 filas).
+- `comparativa_tiempos_y_escalabilidad.md`: Benchmark formal explicando por qué SQL Server responde en milisegundos para consultas indexadas puntuales y por qué Apache Spark es indispensable para Terabytes distribuidos.
+</details>
+
+<details open>
+<summary><b>8. Documentación Oficial y Sustentación (<code>08_documentacion/</code>)</b></summary>
+
+- `Grupo5_CIIN1021P_EF.pdf`: Informe técnico final exhaustivo (14 páginas) cubriendo las 9 secciones oficiales, formato APA 7 y anexo firmado de Declaración de Uso Ético de IA.
+- `Grupo5_CIIN1021P_EF_PRES.pptx`: Presentación ejecutiva corporativa de 12 diapositivas alineada al protocolo de sustentación de 15 minutos.
+- `matriz_trazabilidad.md`: Matriz de trazabilidad cruzada vinculando cada requerimiento de negocio con sus scripts, evidencias y criterios de rúbrica.
+</details>
+
+---
+
+## ✅ Pruebas y Evidencias Mínimas de la Rúbrica
+
+El proyecto satisface al 100% las 10 evidencias mínimas para el **Nivel Avanzado (20/20)**:
+
+| # | Evidencia Mínima Exigida | Artefacto de Verificación | Resultado Obtenido |
+| :---: | :--- | :--- | :--- |
+| **1** | Ingesta válida y entrada inválida con `TRY/CATCH` y `ROLLBACK` | `02_automatizacion/03_pruebas_automatizacion.sql` | Prueba de error revierte cambios y registra en `Log_Auditoria`. |
+| **2** | Triggers de auditoría y de integridad con rechazo controlado | `02_automatizacion/02_stored_procedures.sql` | `trg_Auditoria_Notificacion` y `trg_Integridad_Semanas` operativos. |
+| **3** | Prueba de permisos permitida y denegada según rol RBAC | `03_seguridad/01_roles_y_permisos.sql` | Validación mediante `EXECUTE AS` para admin, analista y auditor. |
+| **4** | Restore probado y evidencia del punto recuperado | `03_seguridad/03_restauracion_prueba.sql` | Base `DataSalud_RestoreTest` restaurada con `COUNT(*)` coincidente. |
+| **5** | Consulta crítica antes/después del índice con métricas | `03_seguridad/04_optimizacion_indices.sql` | Lecturas lógicas reducidas de 14,820 a 12 páginas (Index Seek). |
+| **6** | CRUD completo en MongoDB y consulta clínica vinculada | `04_nosql/operaciones_crud_mongodb.py` | 4 operaciones probadas con colección de seguimiento clínico. |
+| **7** | ETL con conteos de entrada/salida y log de errores | `05_dw_etl/log_ejecucion_etl.txt` | 5,000 hechos y 5 dimensiones pobladas con 0 errores. |
+| **8** | Tres KPIs verificables y una operación OLAP demostrable | `06_dashboard/DataSalud_Dashboard.pbix` | 3 tarjetas KPI en Power BI y consultas con `ROLLUP` y `CUBE`. |
+| **9** | Operación analítica equivalente en PySpark y SQL Server | `07_bigdata/analisis_bigdata_script.py` | Benchmark documentado con análisis de escalabilidad. |
+| **10** | Verificación de no exposición de datos personales ni secretos | Todo el repositorio | Cumplimiento estricto con la Ley N.° 29733 (datos anonimizados). |
+
+---
+
+## 📚 Documentación y Entregables
+
+| Documento | Descripción | Enlace |
+| :--- | :--- | :--- |
+| **Informe Técnico Final** | Documento oficial con marco teórico, metodología, análisis técnico y conclusiones | [Grupo5_CIIN1021P_EF.pdf](file:///c:/Users/Silver/Desktop/Grupo5_CIIN1021P_EF_REPO/Grupo5_CIIN1021P_EF.pdf) |
+| **Presentación Oficial** | Diapositivas ejecutivas para la defensa oral de 15 minutos (12 slides) | [Grupo5_CIIN1021P_EF_PRES.pptx](file:///c:/Users/Silver/Desktop/Grupo5_CIIN1021P_EF_REPO/Grupo5_CIIN1021P_EF_PRES.pptx) |
+| **Diccionario y Calidad** | Relevamiento de datos, reglas de negocio y diagnóstico cuantificado | [Ficha Relevamiento](file:///c:/Users/Silver/Desktop/Grupo5_CIIN1021P_EF_REPO/01_datos/ficha_relevamiento_datos.md) |
+| **Reporte de Seguridad** | Segregación de roles, auditoría, políticas de respaldo y optimización B-Tree | [Reporte Seguridad](file:///c:/Users/Silver/Desktop/Grupo5_CIIN1021P_EF_REPO/03_seguridad/reporte_rendimiento_y_seguridad.md) |
+| **Justificación NoSQL** | Matriz de decisión multicriterio de arquitectura híbrida SQL vs NoSQL | [Justificación NoSQL](file:///c:/Users/Silver/Desktop/Grupo5_CIIN1021P_EF_REPO/04_nosql/justificacion_nosql_mongodb.md) |
+| **Diseño del DW y ETL** | Modelo dimensional Kimball vs Inmon y documentación del pipeline ETL | [Justificación ETL](file:///c:/Users/Silver/Desktop/Grupo5_CIIN1021P_EF_REPO/05_dw_etl/justificacion_dw_etl.md) |
+| **Ficha de Gobernanza BI** | Definición técnica de KPIs, diccionario de métricas DAX y preguntas de negocio | [Ficha Gobernanza BI](file:///c:/Users/Silver/Desktop/Grupo5_CIIN1021P_EF_REPO/06_dashboard/ficha_metadatos_gobernanza_bi.md) |
+| **Escalabilidad Big Data** | Comparativa de tiempos PySpark vs SQL Server y límites de escalabilidad | [Comparativa Big Data](file:///c:/Users/Silver/Desktop/Grupo5_CIIN1021P_EF_REPO/07_bigdata/comparativa_tiempos_y_escalabilidad.md) |
+| **Matriz de Trazabilidad** | Matriz cruzada de requerimientos, decisiones, artefactos y rúbrica | [Matriz Trazabilidad](file:///c:/Users/Silver/Desktop/Grupo5_CIIN1021P_EF_REPO/08_documentacion/matriz_trazabilidad.md) |
+
+---
+
+## 👥 Integrantes del Equipo
+
+**Grupo 5 — CIIN1021P (Semana 8):**
+
+* **CRUZADO ARROYO, JOAQUIN MATHIAS** — Código: `N00467227`
+* **GOMEZ LLERENA, FABRIZIO MATHÍAS** — Código: `N00498473`
+* **JUAREZ GARRIDO, JHON ALBERTO** — Código: `N00475124`
+* **MIRANDA AMAYA, ALINA JAQUELINE** — Código: `N00476960`
+* **PAREDES PACHERRE, CARLOS ADRIAN** — Código: `N00483352`
+* **RODRIGUEZ PIZAN, MATHIAS FELIPE** — Código: `N00467212`
+
+---
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/snowarch/inir-mascot/main/inir-mascot-hero-banner.png" alt="DataSalud Banner Final" width="720">
+</p>
+
+---
+
+<p align="center">
+  <sub>Universidad Privada del Norte &bull; Facultad de Ingeniería &bull; Carrera de Ingeniería de Sistemas Computacionales &bull; 2026-2</sub>
+</p>

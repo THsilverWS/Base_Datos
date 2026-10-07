@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="9/23/2026 7:09:31 PM"
@@ -404,7 +404,7 @@
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT TOP 5000 id_caso, ano, semana, departamento, provincia, distrito, diresa, ubigeo, enfermedad, diagnostic, edad, tipo_edad, sexo, localcod FROM dbo.stg_vigilancia_minsa WHERE departamento LIKE '%LIBERTAD%'</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT TOP 5000 id_notificacion AS id_caso, CAST(ano AS VARCHAR(10)) AS ano, CAST(semana AS VARCHAR(10)) AS semana, departamento, provincia, distrito, diresa, ubigeo, enfermedad, diagnostico_cie10 AS diagnostic, CAST(edad AS VARCHAR(20)) AS edad, tipo_edad, sexo, ISNULL(NULLIF(localcod, ''), 'S/C') AS localcod FROM dbo.Notificacion_Epidemiologica WHERE departamento LIKE '%LIBERTAD%'</property>
                 <property
                   dataType="System.String"
                   description="The variable that contains the SQL command to be executed."

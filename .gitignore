@@ -5,6 +5,7 @@ __pycache__/
 venv/
 env/
 .venv/
+generar_presentacion_pptx.py
 
 # Visual Studio / SSIS
 .vs/
@@ -23,12 +24,9 @@ obj/
 # Backups locales
 *.bak
 
-# Documentos pesados y presentaciones
+# Documentos pesados y presentaciones (se entregan por Aula Virtual)
 *.pptx
 *.pdf
-
-# Carpeta de documentacion completa
-08_documentacion/
 
 # Ignorar todos los archivos Markdown excepto el README.md principal de la raiz
 *.md

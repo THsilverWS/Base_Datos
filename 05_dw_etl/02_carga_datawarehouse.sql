@@ -81,25 +81,38 @@ CREATE OR ALTER PROCEDURE dbo.sp_ETL_Cargar_Dim_Ubicacion
 AS
 BEGIN
     SET NOCOUNT ON;
-    INSERT INTO dbo.Dim_Ubicacion (id_ubicacion, ubigeo, departamento, provincia, distrito, diresa)
-    SELECT 
-        ROW_NUMBER() OVER (ORDER BY ubigeo) AS id_ubicacion,
-        ubigeo,
-        departamento,
-        provincia,
-        distrito,
-        diresa
-    FROM (
-        SELECT DISTINCT 
-            CAST(RTRIM(LTRIM(REPLACE(ubigeo, '"', ''))) AS CHAR(6)) AS ubigeo,
-            CAST(RTRIM(LTRIM(REPLACE(departamento, '"', ''))) AS VARCHAR(50)) AS departamento,
-            CAST(RTRIM(LTRIM(REPLACE(provincia, '"', ''))) AS VARCHAR(50)) AS provincia,
-            CAST(RTRIM(LTRIM(REPLACE(distrito, '"', ''))) AS VARCHAR(50)) AS distrito,
-            CAST(RTRIM(LTRIM(REPLACE(diresa, '"', ''))) AS VARCHAR(10)) AS diresa
-        FROM DataSalud.dbo.stg_vigilancia_minsa
-        WHERE departamento LIKE '%LIBERTAD%'
-          AND ubigeo IS NOT NULL AND LEN(RTRIM(LTRIM(REPLACE(ubigeo, '"', '')))) = 6
-    ) t;
+    
+    IF EXISTS (SELECT 1 FROM DataSalud.dbo.Notificacion_Epidemiologica WHERE departamento LIKE '%LIBERTAD%')
+    BEGIN
+        INSERT INTO dbo.Dim_Ubicacion (id_ubicacion, ubigeo, departamento, provincia, distrito, diresa)
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY ubigeo) AS id_ubicacion,
+            ubigeo, departamento, provincia, distrito, diresa
+        FROM (
+            SELECT DISTINCT 
+                ubigeo, departamento, provincia, distrito, diresa
+            FROM DataSalud.dbo.Notificacion_Epidemiologica
+            WHERE departamento LIKE '%LIBERTAD%'
+        ) t;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO dbo.Dim_Ubicacion (id_ubicacion, ubigeo, departamento, provincia, distrito, diresa)
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY ubigeo) AS id_ubicacion,
+            ubigeo, departamento, provincia, distrito, diresa
+        FROM (
+            SELECT DISTINCT 
+                CAST(RTRIM(LTRIM(REPLACE(ubigeo, '"', ''))) AS CHAR(6)) AS ubigeo,
+                CAST(RTRIM(LTRIM(REPLACE(departamento, '"', ''))) AS VARCHAR(50)) AS departamento,
+                CAST(RTRIM(LTRIM(REPLACE(provincia, '"', ''))) AS VARCHAR(50)) AS provincia,
+                CAST(RTRIM(LTRIM(REPLACE(distrito, '"', ''))) AS VARCHAR(50)) AS distrito,
+                CAST(RTRIM(LTRIM(REPLACE(diresa, '"', ''))) AS VARCHAR(10)) AS diresa
+            FROM DataSalud.dbo.stg_vigilancia_minsa
+            WHERE departamento LIKE '%LIBERTAD%'
+              AND ubigeo IS NOT NULL AND LEN(RTRIM(LTRIM(REPLACE(ubigeo, '"', '')))) = 6
+        ) t;
+    END;
 END;
 GO
 
@@ -107,24 +120,48 @@ CREATE OR ALTER PROCEDURE dbo.sp_ETL_Cargar_Dim_Enfermedad
 AS
 BEGIN
     SET NOCOUNT ON;
-    INSERT INTO dbo.Dim_Enfermedad (id_enfermedad, diagnostico_cie10, nombre_enfermedad, tipo_patologia, es_metaxenica)
-    SELECT 
-        ROW_NUMBER() OVER (ORDER BY diagnostico_cie10) AS id_enfermedad,
-        diagnostico_cie10,
-        nombre_enfermedad,
-        CASE 
-            WHEN nombre_enfermedad LIKE '%DENGUE%' THEN 'Dengue Arbovirus'
-            ELSE 'Leishmaniasis Parasitaria'
-        END AS tipo_patologia,
-        1 AS es_metaxenica
-    FROM (
-        SELECT DISTINCT 
-            CAST(RTRIM(LTRIM(REPLACE(diagnostic, '"', ''))) AS VARCHAR(10)) AS diagnostico_cie10,
-            CAST(UPPER(RTRIM(LTRIM(REPLACE(enfermedad, '"', '')))) AS VARCHAR(100)) AS nombre_enfermedad
-        FROM DataSalud.dbo.stg_vigilancia_minsa
-        WHERE departamento LIKE '%LIBERTAD%'
-          AND diagnostic IS NOT NULL AND RTRIM(LTRIM(REPLACE(diagnostic, '"', ''))) <> ''
-    ) t;
+
+    IF EXISTS (SELECT 1 FROM DataSalud.dbo.Notificacion_Epidemiologica WHERE departamento LIKE '%LIBERTAD%')
+    BEGIN
+        INSERT INTO dbo.Dim_Enfermedad (id_enfermedad, diagnostico_cie10, nombre_enfermedad, tipo_patologia, es_metaxenica)
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY diagnostico_cie10) AS id_enfermedad,
+            diagnostico_cie10,
+            nombre_enfermedad,
+            CASE 
+                WHEN nombre_enfermedad LIKE '%DENGUE%' THEN 'Dengue Arbovirus'
+                ELSE 'Leishmaniasis Parasitaria'
+            END AS tipo_patologia,
+            1 AS es_metaxenica
+        FROM (
+            SELECT DISTINCT 
+                diagnostico_cie10,
+                UPPER(enfermedad) AS nombre_enfermedad
+            FROM DataSalud.dbo.Notificacion_Epidemiologica
+            WHERE departamento LIKE '%LIBERTAD%'
+        ) t;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO dbo.Dim_Enfermedad (id_enfermedad, diagnostico_cie10, nombre_enfermedad, tipo_patologia, es_metaxenica)
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY diagnostico_cie10) AS id_enfermedad,
+            diagnostico_cie10,
+            nombre_enfermedad,
+            CASE 
+                WHEN nombre_enfermedad LIKE '%DENGUE%' THEN 'Dengue Arbovirus'
+                ELSE 'Leishmaniasis Parasitaria'
+            END AS tipo_patologia,
+            1 AS es_metaxenica
+        FROM (
+            SELECT DISTINCT 
+                CAST(RTRIM(LTRIM(REPLACE(diagnostic, '"', ''))) AS VARCHAR(10)) AS diagnostico_cie10,
+                CAST(UPPER(RTRIM(LTRIM(REPLACE(enfermedad, '"', '')))) AS VARCHAR(100)) AS nombre_enfermedad
+            FROM DataSalud.dbo.stg_vigilancia_minsa
+            WHERE departamento LIKE '%LIBERTAD%'
+              AND diagnostic IS NOT NULL AND RTRIM(LTRIM(REPLACE(diagnostic, '"', ''))) <> ''
+        ) t;
+    END;
 END;
 GO
 
@@ -132,25 +169,47 @@ CREATE OR ALTER PROCEDURE dbo.sp_ETL_Cargar_Dim_Paciente
 AS
 BEGIN
     SET NOCOUNT ON;
-    INSERT INTO dbo.Dim_Paciente (id_paciente, edad, tipo_edad, sexo, curso_vida_minsa)
-    SELECT 
-        ROW_NUMBER() OVER (ORDER BY edad, tipo_edad, sexo) AS id_paciente,
-        edad,
-        tipo_edad,
-        sexo,
-        DataSalud.dbo.fn_ClasificarCursoVida(edad, tipo_edad) AS curso_vida_minsa
-    FROM (
-        SELECT DISTINCT 
-            CAST(CASE 
-                WHEN TRY_CAST(RTRIM(LTRIM(REPLACE(edad, '"', ''))) AS INT) BETWEEN 0 AND 120 
-                    THEN TRY_CAST(RTRIM(LTRIM(REPLACE(edad, '"', ''))) AS SMALLINT)
-                ELSE 999 
-            END AS SMALLINT) AS edad,
-            CAST(UPPER(LEFT(RTRIM(LTRIM(REPLACE(ISNULL(tipo_edad, 'A'), '"', ''))), 1)) AS CHAR(1)) AS tipo_edad,
-            CAST(UPPER(LEFT(RTRIM(LTRIM(REPLACE(ISNULL(sexo, 'M'), '"', ''))), 1)) AS CHAR(1)) AS sexo
-        FROM DataSalud.dbo.stg_vigilancia_minsa
-        WHERE departamento LIKE '%LIBERTAD%'
-    ) t;
+
+    IF EXISTS (SELECT 1 FROM DataSalud.dbo.Notificacion_Epidemiologica WHERE departamento LIKE '%LIBERTAD%')
+    BEGIN
+        INSERT INTO dbo.Dim_Paciente (id_paciente, edad, tipo_edad, sexo, curso_vida_minsa)
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY edad, tipo_edad, sexo) AS id_paciente,
+            edad,
+            tipo_edad,
+            sexo,
+            DataSalud.dbo.fn_ClasificarCursoVida(edad, tipo_edad) AS curso_vida_minsa
+        FROM (
+            SELECT DISTINCT 
+                edad,
+                tipo_edad,
+                sexo
+            FROM DataSalud.dbo.Notificacion_Epidemiologica
+            WHERE departamento LIKE '%LIBERTAD%'
+        ) t;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO dbo.Dim_Paciente (id_paciente, edad, tipo_edad, sexo, curso_vida_minsa)
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY edad, tipo_edad, sexo) AS id_paciente,
+            edad,
+            tipo_edad,
+            sexo,
+            DataSalud.dbo.fn_ClasificarCursoVida(edad, tipo_edad) AS curso_vida_minsa
+        FROM (
+            SELECT DISTINCT 
+                CAST(CASE 
+                    WHEN TRY_CAST(RTRIM(LTRIM(REPLACE(edad, '"', ''))) AS INT) BETWEEN 0 AND 120 
+                        THEN TRY_CAST(RTRIM(LTRIM(REPLACE(edad, '"', ''))) AS SMALLINT)
+                    ELSE 999 
+                END AS SMALLINT) AS edad,
+                CAST(UPPER(LEFT(RTRIM(LTRIM(REPLACE(ISNULL(tipo_edad, 'A'), '"', ''))), 1)) AS CHAR(1)) AS tipo_edad,
+                CAST(UPPER(LEFT(RTRIM(LTRIM(REPLACE(ISNULL(sexo, 'M'), '"', ''))), 1)) AS CHAR(1)) AS sexo
+            FROM DataSalud.dbo.stg_vigilancia_minsa
+            WHERE departamento LIKE '%LIBERTAD%'
+        ) t;
+    END;
 END;
 GO
 
@@ -158,25 +217,47 @@ CREATE OR ALTER PROCEDURE dbo.sp_ETL_Cargar_Dim_Establecimiento
 AS
 BEGIN
     SET NOCOUNT ON;
-    INSERT INTO dbo.Dim_Establecimiento (id_establecimiento, localcod, nombre_establecimiento, tiene_codigo_oficial)
-    SELECT 
-        ROW_NUMBER() OVER (ORDER BY localcod) AS id_establecimiento,
-        localcod,
-        CASE 
-            WHEN localcod = 'S/C' THEN 'ESTABLECIMIENTO NO ESPECIFICADO (S/C)'
-            ELSE 'ESTABLECIMIENTO REGISTRADO'
-        END AS nombre_establecimiento,
-        CASE WHEN localcod = 'S/C' THEN 0 ELSE 1 END AS tiene_codigo_oficial
-    FROM (
-        SELECT DISTINCT 
-            CAST(CASE 
-                WHEN localcod IS NULL OR RTRIM(LTRIM(REPLACE(localcod, '"', ''))) IN ('', '0', 'nan') 
-                    THEN 'S/C'
-                ELSE RTRIM(LTRIM(REPLACE(localcod, '"', '')))
-            END AS VARCHAR(20)) AS localcod
-        FROM DataSalud.dbo.stg_vigilancia_minsa
-        WHERE departamento LIKE '%LIBERTAD%'
-    ) t;
+
+    IF EXISTS (SELECT 1 FROM DataSalud.dbo.Notificacion_Epidemiologica WHERE departamento LIKE '%LIBERTAD%')
+    BEGIN
+        INSERT INTO dbo.Dim_Establecimiento (id_establecimiento, localcod, nombre_establecimiento, tiene_codigo_oficial)
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY localcod) AS id_establecimiento,
+            localcod,
+            CASE 
+                WHEN localcod = 'S/C' THEN 'ESTABLECIMIENTO NO ESPECIFICADO (S/C)'
+                ELSE 'ESTABLECIMIENTO REGISTRADO'
+            END AS nombre_establecimiento,
+            CASE WHEN localcod = 'S/C' THEN 0 ELSE 1 END AS tiene_codigo_oficial
+        FROM (
+            SELECT DISTINCT 
+                localcod
+            FROM DataSalud.dbo.Notificacion_Epidemiologica
+            WHERE departamento LIKE '%LIBERTAD%'
+        ) t;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO dbo.Dim_Establecimiento (id_establecimiento, localcod, nombre_establecimiento, tiene_codigo_oficial)
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY localcod) AS id_establecimiento,
+            localcod,
+            CASE 
+                WHEN localcod = 'S/C' THEN 'ESTABLECIMIENTO NO ESPECIFICADO (S/C)'
+                ELSE 'ESTABLECIMIENTO REGISTRADO'
+            END AS nombre_establecimiento,
+            CASE WHEN localcod = 'S/C' THEN 0 ELSE 1 END AS tiene_codigo_oficial
+        FROM (
+            SELECT DISTINCT 
+                CAST(CASE 
+                    WHEN localcod IS NULL OR RTRIM(LTRIM(REPLACE(localcod, '"', ''))) IN ('', '0', 'nan') 
+                        THEN 'S/C'
+                    ELSE RTRIM(LTRIM(REPLACE(localcod, '"', '')))
+                END AS VARCHAR(20)) AS localcod
+            FROM DataSalud.dbo.stg_vigilancia_minsa
+            WHERE departamento LIKE '%LIBERTAD%'
+        ) t;
+    END;
 END;
 GO
 
@@ -185,17 +266,58 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    -- Flujo Integrado Oficial: Extraer prioritariamente de Notificacion_Epidemiologica
+    -- (tabla oficial auditada y validada por los triggers de integridad)
     IF NOT EXISTS (SELECT 1 FROM dbo.Staging_Vigilancia_LaLibertad)
     BEGIN
-        INSERT INTO dbo.Staging_Vigilancia_LaLibertad (
-            departamento, provincia, distrito, diresa, ubigeo,
-            enfermedad, diagnostic, ano, semana, edad, tipo_edad, sexo, localcod
-        )
-        SELECT 
-            departamento, provincia, distrito, diresa, ubigeo,
-            enfermedad, diagnostic, ano, semana, edad, tipo_edad, sexo, localcod
-        FROM DataSalud.dbo.stg_vigilancia_minsa
-        WHERE departamento LIKE '%LIBERTAD%';
+        IF EXISTS (SELECT 1 FROM DataSalud.dbo.Notificacion_Epidemiologica WHERE departamento LIKE '%LIBERTAD%')
+        BEGIN
+            INSERT INTO dbo.Staging_Vigilancia_LaLibertad (
+                id_caso, ano, semana, departamento, provincia, distrito, diresa, ubigeo,
+                enfermedad, diagnostic, edad, tipo_edad, sexo, localcod
+            )
+            SELECT 
+                id_notificacion,
+                CAST(ano AS VARCHAR(10)),
+                CAST(semana AS VARCHAR(10)),
+                departamento, 
+                provincia, 
+                distrito, 
+                diresa, 
+                ubigeo,
+                enfermedad, 
+                diagnostico_cie10, 
+                CAST(edad AS VARCHAR(20)), 
+                tipo_edad, 
+                sexo, 
+                localcod
+            FROM DataSalud.dbo.Notificacion_Epidemiologica
+            WHERE departamento LIKE '%LIBERTAD%';
+        END
+        ELSE
+        BEGIN
+            INSERT INTO dbo.Staging_Vigilancia_LaLibertad (
+                id_caso, ano, semana, departamento, provincia, distrito, diresa, ubigeo,
+                enfermedad, diagnostic, edad, tipo_edad, sexo, localcod
+            )
+            SELECT 
+                ISNULL(id_caso, ROW_NUMBER() OVER (ORDER BY (SELECT 1))),
+                ano,
+                semana,
+                departamento, 
+                provincia, 
+                distrito, 
+                diresa, 
+                ubigeo,
+                enfermedad, 
+                diagnostic, 
+                edad, 
+                tipo_edad, 
+                sexo, 
+                ISNULL(NULLIF(REPLACE(localcod, '"', ''), ''), 'S/C')
+            FROM DataSalud.dbo.stg_vigilancia_minsa
+            WHERE departamento LIKE '%LIBERTAD%';
+        END;
     END;
 
     INSERT INTO dbo.Fact_Vigilancia_Epidemiologica (
