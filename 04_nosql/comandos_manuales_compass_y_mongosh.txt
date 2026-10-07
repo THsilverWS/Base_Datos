@@ -3,105 +3,173 @@ GUÍA DE COMANDOS MANUALES PARA MONGODB (COMPASS Y _MONGOSH)
 Curso: Bases de Datos Avanzadas y Big Data (CIIN1021P) - DIRESA La Libertad
 =============================================================================
 
-Este archivo contiene los comandos listos para copiar y pegar uno por uno
-durante la sustentación o pruebas manuales frente al docente.
+Este archivo contiene los comandos EXACTOS que ejecuta el script Python
+(operaciones_crud_mongodb.py), listos para copiar y pegar en MongoDB Compass
+o en la consola mongosh durante la sustentación.
 
 -----------------------------------------------------------------------------
 MÉTODO 1: USANDO MONGODB COMPASS (INTERFAZ VISUAL CON CLICS)
 -----------------------------------------------------------------------------
-1. Abre MongoDB Compass desde el Menú Inicio de Windows.
-2. En la pantalla inicial, haz clic en el botón verde "Connect" (URI: mongodb://localhost:27017).
-3. En el menú de la izquierda, haz clic en la base de datos "DataSaludNoSQL" y luego en la colección "atenciones_clinicas".
+1. Abre MongoDB Compass.
+2. Clic en "Connect" (URI: mongodb://localhost:27017).
+3. En el menú izquierdo, selecciona la base de datos "DataSaludNoSQL" y luego la colección "atenciones_clinicas".
 
 A. [CREATE] INSERTAR UN DOCUMENTO A MANO:
-   - Haz clic en "Add Data" -> "Insert Document".
-   - Pega el siguiente bloque JSON y haz clic en "Insert":
+   - Clic en "Add Data" -> "Insert Document".
+   - Pega este documento de prueba (AT-2024-00101) y clic en "Insert":
 
 {
-  "id_atencion": "AT-2024-MANUAL-01",
-  "fecha_atencion": { "$date": "2024-04-20T10:00:00Z" },
+  "id_atencion": "AT-2024-00101",
+  "fecha_atencion": { "$date": "2024-04-12T09:30:00Z" },
   "departamento": "LA LIBERTAD",
   "provincia": "TRUJILLO",
-  "distrito": "LA ESPERANZA",
-  "establecimiento": "HOSPITAL DISTRITAL JERUSALEN",
+  "distrito": "EL PORVENIR",
+  "establecimiento": "HOSPITAL SANTA ISABEL",
   "enfermedad": "DENGUE CON SIGNOS DE ALARMA",
   "cie10": "A97.1",
-  "paciente": { "edad": 22, "tipo_edad": "A", "sexo": "M", "etapa_vida": "JOVEN" },
+  "paciente": { "edad": 28, "tipo_edad": "A", "sexo": "F", "etapa_vida": "JOVEN" },
   "datos_clinicos": {
-    "dias_fiebre": 3,
-    "temperatura_axilar": 38.9,
-    "plaquetas": 92000,
-    "signos_alarma": ["Dolor abdominal", "Somnolencia"],
+    "dias_fiebre": 4,
+    "temperatura_axilar": 39.2,
+    "plaquetas": 85000,
+    "hematocrito": 44.5,
+    "signos_alarma": ["Dolor abdominal intenso y continuo", "Vómitos persistentes"],
     "requiere_hospitalizacion": true,
-    "cama_asignada": "C-08"
+    "cama_asignada": "C-14",
+    "evolucion_favorable": false
   }
 }
 
-B. [READ] CONSULTAR EN LA BARRA "FILTER" DE COMPASS:
-   - En la casilla "Filter" arriba, pega exactamente esto y haz clic en "Find":
+B. [READ] CONSULTAR EN LA CASILLA "FILTER" DE COMPASS:
+   - Pega exactamente esto en la barra de filtro y clic en "Find":
      { "datos_clinicos.requiere_hospitalizacion": true }
 
-   - Si deseas consultar solo casos de DENGUE GRAVE:
-     { "enfermedad": "DENGUE GRAVE" }
+C. [UPDATE] ACTUALIZAR EN COMPASS CON EL LÁPIZ:
+   - En el documento "AT-2024-00101", clic en el lápiz (Edit Document).
+   - Cambia plaquetas a 135000 y evolucion_favorable a true.
+   - Clic en "Update".
 
-   - Si deseas consultar solo pacientes de LEISHMANIASIS:
-     { "enfermedad": "LEISHMANIASIS CUTANEA" }
-
-C. [UPDATE] ACTUALIZAR MANUALMENTE EN COMPASS:
-   - Pasa el ratón sobre cualquier documento y haz clic en el icono del LÁPIZ (Edit Document).
-   - Edita el valor del campo (por ejemplo, cambia plaquetas a 140000).
-   - Haz clic en "Update".
-
-D. [DELETE] ELIMINAR MANUALMENTE EN COMPASS:
-   - Pasa el ratón sobre el documento que deseas borrar y haz clic en el TACHO DE BASURA (Delete Document).
+D. [DELETE] ELIMINAR EN COMPASS:
+   - En el documento "AT-2024-00103", clic en el tacho de basura (Delete Document).
 
 
 -----------------------------------------------------------------------------
 MÉTODO 2: USANDO LA CONSOLA INTERACTIVA (_MONGOSH EN COMPASS O TERMINAL)
 -----------------------------------------------------------------------------
-En la parte inferior de MongoDB Compass, haz clic en la pestaña ">_MONGOSH"
-y ejecuta estos comandos línea por línea:
+Abre la pestaña ">_MONGOSH" en la parte inferior de Compass (o ejecuta 'mongosh'
+en tu terminal) y copia estos comandos en orden:
 
-// PASO 1: Seleccionar la base de datos
+// 1. Seleccionar la base de datos
 use DataSaludNoSQL;
 
-// PASO 2: [CREATE] Insertar un documento individual
-db.atenciones_clinicas.insertOne({
-  "id_atencion": "AT-2024-DEMO-01",
-  "departamento": "LA LIBERTAD",
-  "distrito": "EL PORVENIR",
-  "enfermedad": "DENGUE CON SIGNOS DE ALARMA",
-  "datos_clinicos": {
-    "plaquetas": 78000,
-    "requiere_hospitalizacion": true,
-    "cama_asignada": "C-15",
-    "signos_alarma": ["Vómitos frecuentes", "Dolor abdominal"]
+// 2. [CREATE] Insertar las 4 historias clínicas del proyecto
+db.atenciones_clinicas.insertMany([
+  {
+    "id_atencion": "AT-2024-00101",
+    "fecha_atencion": new Date("2024-04-12T09:30:00Z"),
+    "departamento": "LA LIBERTAD",
+    "provincia": "TRUJILLO",
+    "distrito": "EL PORVENIR",
+    "establecimiento": "HOSPITAL SANTA ISABEL",
+    "enfermedad": "DENGUE CON SIGNOS DE ALARMA",
+    "cie10": "A97.1",
+    "paciente": { "edad": 28, "tipo_edad": "A", "sexo": "F", "etapa_vida": "JOVEN" },
+    "datos_clinicos": {
+      "dias_fiebre": 4,
+      "temperatura_axilar": 39.2,
+      "plaquetas": 85000,
+      "hematocrito": 44.5,
+      "signos_alarma": ["Dolor abdominal intenso y continuo", "Vómitos persistentes"],
+      "requiere_hospitalizacion": true,
+      "cama_asignada": "C-14",
+      "evolucion_favorable": false
+    }
+  },
+  {
+    "id_atencion": "AT-2024-00102",
+    "fecha_atencion": new Date("2024-04-14T11:15:00Z"),
+    "departamento": "LA LIBERTAD",
+    "provincia": "CHEPEN",
+    "distrito": "PACANGA",
+    "establecimiento": "PUESTO DE SALUD PACANGA",
+    "enfermedad": "LEISHMANIASIS CUTANEA",
+    "cie10": "B55.1",
+    "paciente": { "edad": 35, "tipo_edad": "A", "sexo": "M", "etapa_vida": "ADULTO" },
+    "datos_clinicos": {
+      "tiempo_enfermedad_meses": 2,
+      "tipo_lesion": "Ulcera de bordes elevados e indurados",
+      "ubicacion_lesion": ["Brazo izquierdo", "Oreja derecha"],
+      "numero_lesiones": 2,
+      "frotis_directo_leishmania": "POSITIVO",
+      "tratamiento_indicado": { "medicamento": "Antimoniato de meglumina", "dosis_mg_dia": 1200, "duracion_dias": 20 }
+    }
+  },
+  {
+    "id_atencion": "AT-2024-00103",
+    "fecha_atencion": new Date("2024-04-16T14:40:00Z"),
+    "departamento": "LA LIBERTAD",
+    "provincia": "TRUJILLO",
+    "distrito": "LA ESPERANZA",
+    "establecimiento": "CENTRO DE SALUD JERUSALEN",
+    "enfermedad": "DENGUE SIN SIGNOS DE ALARMA",
+    "cie10": "A97.0",
+    "paciente": { "edad": 15, "tipo_edad": "A", "sexo": "M", "etapa_vida": "ADOLESCENTE" },
+    "datos_clinicos": {
+      "dias_fiebre": 2,
+      "temperatura_axilar": 38.4,
+      "plaquetas": 195000,
+      "hematocrito": 38.0,
+      "signos_alarma": [],
+      "requiere_hospitalizacion": false
+    }
+  },
+  {
+    "id_atencion": "AT-2024-00104",
+    "fecha_atencion": new Date("2024-04-18T16:20:00Z"),
+    "departamento": "LA LIBERTAD",
+    "provincia": "ASCOPE",
+    "distrito": "CASA GRANDE",
+    "establecimiento": "HOSPITAL CASA GRANDE",
+    "enfermedad": "DENGUE GRAVE",
+    "cie10": "A97.2",
+    "paciente": { "edad": 62, "tipo_edad": "A", "sexo": "F", "etapa_vida": "ADULTO MAYOR" },
+    "datos_clinicos": {
+      "dias_fiebre": 5,
+      "temperatura_axilar": 39.8,
+      "plaquetas": 28000,
+      "hematocrito": 51.2,
+      "signos_alarma": ["Hipotensión severa", "Sangrado de mucosas", "Derrame pleural"],
+      "requiere_hospitalizacion": true,
+      "cama_asignada": "UCI-03",
+      "evolucion_favorable": false
+    }
   }
-});
+]);
 
-// PASO 3: [READ] Consultar pacientes hospitalizados con campos específicos
+// 3. [READ] Consultar pacientes hospitalizados (coincide con el Paso 3 del script python)
 db.atenciones_clinicas.find(
   { "datos_clinicos.requiere_hospitalizacion": true },
-  { "id_atencion": 1, "distrito": 1, "enfermedad": 1, "datos_clinicos.cama_asignada": 1, "_id": 0 }
+  { "id_atencion": 1, "distrito": 1, "enfermedad": 1, "datos_clinicos.cama_asignada": 1, "datos_clinicos.plaquetas": 1, "datos_clinicos.signos_alarma": 1, "_id": 0 }
 );
 
-// PASO 4: [UPDATE] Actualizar evolución médica y plaquetas con el operador $set
+// 4. [UPDATE] Actualizar evolución médica de AT-2024-00101 (coincide con el Paso 4)
 db.atenciones_clinicas.updateOne(
-  { "id_atencion": "AT-2024-DEMO-01" },
+  { "id_atencion": "AT-2024-00101" },
   {
     $set: {
-      "datos_clinicos.plaquetas": 145000,
+      "datos_clinicos.plaquetas": 135000,
       "datos_clinicos.evolucion_favorable": true,
-      "datos_clinicos.observaciones": "Paciente dado de alta por recuperación favorable."
+      "datos_clinicos.observaciones_alta": "Paciente recuperada, dada de alta."
     }
   }
 );
 
-// PASO 5: [READ] Verificar que la actualización surtió efecto
-db.atenciones_clinicas.find({ "id_atencion": "AT-2024-DEMO-01" });
+// 5. [READ] Verificar que los cambios se aplicaron a AT-2024-00101
+db.atenciones_clinicas.find({ "id_atencion": "AT-2024-00101" });
 
-// PASO 6: [DELETE] Eliminar el registro de prueba creado
-db.atenciones_clinicas.deleteOne({ "id_atencion": "AT-2024-DEMO-01" });
+// 6. [DELETE] Borrar al paciente leve AT-2024-00103 (coincide con el Paso 5)
+db.atenciones_clinicas.deleteOne({ "id_atencion": "AT-2024-00103" });
 
-// PASO 7: Contar cuántos documentos quedan en total
+// 7. [COUNT] Conteo final de documentos que quedan en la colección (resultado: 3)
 db.atenciones_clinicas.countDocuments();
+

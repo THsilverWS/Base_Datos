@@ -2,7 +2,8 @@ USE DataSalud;
 GO
 
 TRUNCATE TABLE dbo.stg_vigilancia_minsa;
-PRINT '>> Tabla staging vaciada para carga nueva.';
+TRUNCATE TABLE dbo.Notificacion_Epidemiologica;
+PRINT '>> Tablas staging y Notificacion_Epidemiologica vaciadas para carga limpia (evita duplicados).';
 GO
 
 PRINT '>> Cargando dataset de DENGUE (2000-2024)...';
@@ -57,5 +58,30 @@ GROUP BY enfermedad;
 SELECT COUNT(*) AS total_general_staging FROM dbo.stg_vigilancia_minsa;
 GO
 
-PRINT '>> [04_carga_datos_csv.sql] Carga masiva finalizada y verificada con éxito.';
+PRINT '>> [04_carga_datos_csv.sql] Carga a Staging completada.';
+PRINT '>> Migrando datos validados desde Staging hacia la tabla oficial Notificacion_Epidemiologica...';
+GO
+
+-- Ingesta controlada y validación de reglas clínicas hacia la tabla oficial
+EXEC dbo.sp_IngestarDesdeStaging;
+GO
+
+PRINT '>> Verificando registros en Notificacion_Epidemiologica...';
+SELECT COUNT(*) AS total_general_notificacion FROM dbo.Notificacion_Epidemiologica;
+
+SELECT TOP 5 
+    id_notificacion, 
+    departamento, 
+    provincia, 
+    distrito, 
+    enfermedad, 
+    ano, 
+    semana, 
+    diagnostico_cie10, 
+    edad, 
+    sexo 
+FROM dbo.Notificacion_Epidemiologica;
+GO
+
+PRINT '>> [04_carga_datos_csv.sql] Carga masiva e ingesta a Notificacion_Epidemiologica finalizada y verificada con éxito.';
 GO

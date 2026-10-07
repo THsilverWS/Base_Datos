@@ -30,10 +30,11 @@ salida_ddl = ejecutar_sql_archivo(archivo_ddl)
 print(">> Paso 2: Compilando procedimientos almacenados de transformacion ETL...")
 salida_carga = ejecutar_sql_archivo(archivo_carga)
 
-print(">> Paso 3: Ejecutando carga dimensional y tabla de hechos en DataSalud_DW...")
+print(">> Paso 3: Ejecutando extraccion a Staging y carga dimensional en DataSalud_DW...")
 consulta_procedimientos = """
 SET NOCOUNT ON;
 EXEC dbo.sp_ETL_LimpiarDW;
+EXEC dbo.sp_ETL_Extraer_A_Staging;
 EXEC dbo.sp_ETL_Cargar_Dim_Tiempo;
 EXEC dbo.sp_ETL_Cargar_Dim_Ubicacion;
 EXEC dbo.sp_ETL_Cargar_Dim_Enfermedad;

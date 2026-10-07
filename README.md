@@ -249,10 +249,12 @@ Ejecuta la extracción, transformación y carga hacia `DataSalud_DW`:
 <summary><b>5. Data Warehouse y ETL (<code>05_dw_etl/</code>)</b></summary>
 
 - `01_ddl_datawarehouse.sql`: Esquema en estrella bajo Ralph Kimball:
-  - Hechos: `Fact_Vigilancia_Epidemiologica` (conteo de casos, gravedad, hospitalizaciones, fallecidos).
-  - Dimensiones: `Dim_Tiempo`, `Dim_Ubicacion`, `Dim_Enfermedad`, `Dim_Paciente`, `Dim_Establecimiento`.
-- `Package.dtsx`: Paquete SSIS desarrollado en Visual Studio con Data Flow Task, conversiones y logs.
-- `etl_python_simple.py`: Pipeline Python alternativo completamente automatizado y verificable.
+  - Hechos: `Fact_Vigilancia_Epidemiologica` (conteo de 5,000 casos, gravedad, claves foráneas).
+  - Dimensiones: `Dim_Tiempo` (1,378 filas), `Dim_Ubicacion` (85), `Dim_Enfermedad` (4), `Dim_Paciente` (245), `Dim_Establecimiento` (1,010).
+- `02_carga_datawarehouse.sql`: Procedimientos almacenados de extracción, transformación y carga (limpieza, homologación `localcod` y cruce dimensional).
+- `Package.dtsx`: Paquete SSIS en Visual Studio con Data Flow Task (OLE DB Source desde `DataSalud.dbo.Notificacion_Epidemiologica`) y ejecución de tareas de carga.
+- `etl_python_simple.py`: Pipeline Python ligero que orquesta los 8 procedimientos SQL en 5 segundos y genera el reporte `log_ejecucion_etl.txt`.
+- `justificacion_kimball_vs_inmon.md`: Sustentación metodológica del enfoque Kimball para la rúbrica [1.5].
 </details>
 
 <details open>

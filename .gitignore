@@ -24,7 +24,7 @@ obj/
 # Backups locales
 *.bak
 
-# Documentos pesados y presentaciones (se entregan por Aula Virtual)
+# Documentos pesados y presentaciones
 *.pptx
 *.pdf
 
