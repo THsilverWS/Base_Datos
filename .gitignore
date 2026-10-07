@@ -31,3 +31,7 @@ obj/
 # Ignorar todos los archivos Markdown excepto el README.md principal de la raiz
 *.md
 !/README.md
+
+# Permitir entregables de 08_documentacion
+!08_documentacion/
+!08_documentacion/**
