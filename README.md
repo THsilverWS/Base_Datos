@@ -147,7 +147,7 @@ $$
 > Debido a las restricciones de tamaño de archivo de GitHub, el repositorio **solo incluye los datasets ligeros de muestra (`muestra_*.csv`)**. Para ejecutar la carga masiva completa de más de 1,000,000 de registros en SQL Server (`02_automatizacion/04_carga_datos_csv.sql`) o el análisis completo en PySpark (`07_bigdata/analisis_bigdata_script.py original`), debes descargar previamente los archivos CSV oficiales completos desde la [Plataforma Nacional de Datos Abiertos](https://www.datosabiertos.gob.pe/) y colocarlos en la carpeta `01_datos/`:
 >
 > * [`datos_abiertos_vigilancia_dengue_2000_2024.csv` (108 MB)](https://www.datosabiertos.gob.pe/dataset/vigilancia-epidemiol%C3%B3gica-de-dengue)
-> * [`datos_abiertos_vigilancia_leishmaniosis_2000_2024.csv` (19 MB)]([https://www.datosabiertos.gob.pe/search/type/dataset?query=vigilancia+leishmaniosis](https://www.datosabiertos.gob.pe/dataset/vigilancia-epidemiol%C3%B3gica-de-leishmaniosis))
+> * [`datos_abiertos_vigilancia_leishmaniosis_2000_2024.csv` (19 MB)](https://www.datosabiertos.gob.pe/dataset/vigilancia-epidemiol%C3%B3gica-de-leishmaniosis)
 
 ### Paso 1: Instalación de Dependencias
 
