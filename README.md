@@ -143,10 +143,11 @@ $$
 ## ⚡ Guía Rápida de Ejecución (Quick Start)
 
 > [!IMPORTANT]
-> **Descarga previa de los Datasets Oficiales Masivos (MINSA):**Debido a las restricciones de tamaño de archivo de GitHub, el repositorio **solo incluye los datasets ligeros de muestra (`muestra_*.csv`)**.Para ejecutar la carga masiva completa de más de 1,000,000 de registros en SQL Server (`02_automatizacion/04_carga_datos_csv.sql`) o el análisis completo en PySpark (`07_bigdata/analisis_bigdata_script.py original`), debes descargar previamente los archivos CSV oficiales completos desde el portal de datos abiertos del MINSA ([datosabiertos.gob.pe](https://www.datosabiertos.gob.pe/)) y colocarlos en la carpeta `01_datos/`:
+> **Descarga previa de los Datasets Oficiales Masivos (MINSA):**
+> Debido a las restricciones de tamaño de archivo de GitHub, el repositorio **solo incluye los datasets ligeros de muestra (`muestra_*.csv`)**. Para ejecutar la carga masiva completa de más de 1,000,000 de registros en SQL Server (`02_automatizacion/04_carga_datos_csv.sql`) o el análisis completo en PySpark (`07_bigdata/analisis_bigdata_script.py original`), debes descargar previamente los archivos CSV oficiales completos desde la [Plataforma Nacional de Datos Abiertos](https://www.datosabiertos.gob.pe/) y colocarlos en la carpeta `01_datos/`:
 >
-> * `datos_abiertos_vigilancia_dengue_2000_2024.csv` (108 MB)
-> * `datos_abiertos_vigilancia_leishmaniosis_2000_2024.csv` (19 MB)
+> * [`datos_abiertos_vigilancia_dengue_2000_2024.csv` (108 MB)](https://www.datosabiertos.gob.pe/search/type/dataset?query=vigilancia+dengue)
+> * [`datos_abiertos_vigilancia_leishmaniosis_2000_2024.csv` (19 MB)](https://www.datosabiertos.gob.pe/search/type/dataset?query=vigilancia+leishmaniosis)
 
 ### Paso 1: Instalación de Dependencias
 
